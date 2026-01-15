@@ -1,105 +1,89 @@
-# 🏛️ Hacettepe Community & Event Portal (Web GIS)
+# 🎓 Hacettepe Community Event Portal (Web-GIS)
 
-**Hacettepe Event Portal** is a specialized **Web GIS platform** designed to bridge the gap between student communities (like GMT, HEK, HENDS) and students. It visualizes campus events on an interactive map, managing real-time data flow with a robust backend.
+A full-stack Web-GIS application designed for student communities at Hacettepe University Beytepe Campus to manage spatial event data, fully compliant with the **GMT 458** final assignment criteria.
 
-The system features a robust backend API, secure authentication (RBAC), and an interactive map interface to show where campus events (ice skating, workshops, meetings) are taking place.
+## 🎯 Project Objectives
+Developed between **January 12-16, 2026**, this project focuses on managing heterogeneous spatial data in a NoSQL environment with role-based access control and full CRUD capabilities on a geographical point layer.
 
----
+## 🚀 Requirement Fulfillment Matrix
 
-## 🌟 1. User Journey & Interface (Frontend)
-The application features a secure and interactive user journey, ensuring legitimate student access and role-based features.
+| Requirement | Weight | Status | Technical Implementation |
+| :--- | :---: | :---: | :--- |
+| **Authentication** | 15% | ✅ | Secure Sign-up/Login system with OTP verification. |
+| **Managing User Types** | 20% | ✅ | STUDENT, COMMUNITY_LEADER, and ADMIN roles with RBAC. |
+| **NoSQL Database** | 25% | ✅ | MongoDB Atlas utilized for heterogeneous data management. |
+| **Performance (Indexing)** | 25% | ✅ | `2dsphere` (R-Tree) index for spatial query optimization. |
+| **Performance Testing** | 25% | ✅ | Load and Stress testing conducted to monitor response times. |
+| **CRUD Operations** | 15% | ✅ | Full spatial CRUD on geographical point layers. |
+| **API Development** | 25% | ✅ | Swagger-documented API with Postman validation. |
+| **GitHub Management** | 10% | ✅ | 5+ commits on different days via GitHub Classroom. |
 
-### 🏛️ Landing & Verification
-Users land on a clean portal interface. To ensure security, we implemented a **6-digit Email Verification** system.
-<table border="0">
-  <tr>
-    <td width="50%" align="center"><img src="1.jpeg" width="100%"></td>
-    <td width="50%" align="center"><img src="2.jpeg" width="100%"></td>
-  </tr>
-</table>
-*(Left: Landing Page, Right: Email Verification Modal)*
+## 📸 Procedures & Implementation Details
 
-### 👥 Onboarding & Roles
-Upon login, users select their affiliated community. A "Community Leader" sees different options (like **Create Event**) compared to a regular student.
-<table border="0">
-  <tr>
-    <td width="50%" align="center"><img src="3.jpeg" width="100%"></td>
-    <td width="50%" align="center"><img src="4.jpeg" width="100%"></td>
-  </tr>
-</table>
-*(Left: Community Selection Dashboard, Right: Profile with RBAC Controls)*
+### 1. User Authentication & Verification
+The portal uses a secure authentication flow. Users register with Hacettepe credentials and must verify their account using a 6-digit OTP code sent via the system.
 
-### 🌍 Interactive GIS Event Map
-The core feature: Events are rendered on a **Leaflet/OpenLayers** map. Clicking a marker reveals dynamic event cards.
-![Map View](5.jpeg)
+> ![Login Page](readmeimages/1.png)
+> ![OTP Verification](readmeimages/2.png)
 
----
+### 2. Role-Based Access Control (RBAC)
+The system supports three distinct user types managed in a NoSQL backend. Permissions are dynamically adjusted: Students can only view, while Admins/Leaders can manage data.
+* **STUDENT:** View-only access.
+* **ADMIN/LEADER:** Full management rights.
 
-## 🛠️ 2. Backend & Database Architecture
+> ![Community Selection](readmeimages/3.png)
+> ![MongoDB Roles](readmeimages/6.png)
 
-The system is built on a **Modern Tech Stack** using MongoDB for flexible data storage and Swagger for API documentation.
+### 3. Spatial Data Infrastructure (GIS CRUD)
+Admins can interactively add event locations on the campus map using a modern UI modal. Data is stored as GeoJSON features in MongoDB.
+* **Automated Logic:** If an image URL is not provided, the system defaults to the community-specific logo.
+  
+* **Create (C):** Authorized users can click any location on the map. A modern modal window appears, allowing the user to enter the event name and an optional image URL. Upon saving, the coordinates (latitude/longitude) are captured and stored in the NoSQL database.
+* **Read (R):** The system fetches all spatial features from MongoDB and renders them as interactive markers on the map. Additionally, a dynamic sidebar (event grid) lists these events with their respective community logos.
+* **Update (U):** The "Edit" (Düzenle) feature allows Admins to modify the attributes of an existing spatial point, such as renaming the event, without changing its geographical location.
+* **Delete (D):** Redundant or incorrect spatial features can be removed from the system permanently using the "Delete" (Sil) button, which triggers a DELETE request to the FastAPI backend.
 
-### 🗄️ MongoDB Implementation (NoSQL)
-User roles (`STUDENT`, `ADMIN`, `COMMUNITY_LEADER`) and event data are stored in **MongoDB Atlas**.
-![MongoDB](6.jpeg)
+> ![Map Interface](readmeimages/4.png)
+> ![Add Event Modal](readmeimages/5.png)
 
-### 📄 API Documentation (Swagger)
-All endpoints (Auth, Events, Users) are fully documented using **OpenAPI 3.0 / Swagger UI**.
-![Swagger](7.jpeg)
+### 4. API Development & Validation
+The backend API exposes spatial and non-spatial resources, fully documented via **Swagger UI** and rigorously tested using **Postman** for all HTTP methods (GET, POST, PUT, DELETE).
 
----
+* **Interactive API Documentation:** Once the backend server is running, you can access the full Swagger UI here:  
+* 
+    👉 [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+>
+> ![Swagger UI](readmeimages/11.png)
+> 
+> **(Postman Testing):**
+> ![Postman GET](readmeimages/7.png) | ![Postman PUT](readmeimages/8.png) | ![Postman POST](readmeimages/9.png) | ![Postman DELETE](readmeimages/10.png)
 
-## 📡 3. API CRUD Proofs (Postman Testing)
+### 5. Performance Monitoring & Stress Testing
+To observe the impact of indexing and system stability, performance tests were conducted. We monitored response times under various load conditions to ensure the FastAPI backend remains resilient.
+* **Indexing:** Implementation of `2dsphere` index reduced spatial query latency.
+* **Stress Test:** Monitored variation in response times under concurrent user simulation.
 
-The backend RESTful API supports full **CRUD (Create, Read, Update, Delete)** operations.
+> ![Response Time Graph](readmeimages/12.png)
+> ![Stress Test Results](readmeimages/13.png)
 
-### 🔹 READ (GET) & CREATE (POST)
-Fetching events returns geospatial data (`lat`, `lng`). Creating events is restricted to authorized leaders.
-<table border="0">
-  <tr>
-    <td width="50%" align="center"><img src="8.jpeg" width="100%"></td>
-    <td width="50%" align="center"><img src="9.jpeg" width="100%"></td>
-  </tr>
-</table>
+### 6. Deployment & Future Work (AWS)
+* **Live Backend API (Swagger UI):** [http://13.60.21.222:8000/docs](http://13.60.21.222:8000/docs)
+* **Infrastructure:** Hosted on **AWS EC2** (Ubuntu 22.04 LTS).
+* **Database:** MongoDB Atlas (Cloud).
+  
+While the cloud infrastructure and AWS EC2 instance configurations have been successfully established, the project is currently running in a local environment for final stability checks and has not yet been mapped to a public DNS for live access.
 
-### 🔹 UPDATE (PUT) & DELETE
-Modifying event details or removing cancelled events.
-<table border="0">
-  <tr>
-    <td width="50%" align="center"><img src="10.jpeg" width="100%"></td>
-    <td width="50%" align="center"><img src="11.jpeg" width="100%"></td>
-  </tr>
-</table>
+> ![AWS Instance Summary](readmeimages/14.png)
 
----
+## 🛠️ Tech Stack
+* **Backend:** FastAPI (Python), Uvicorn.
+* **Frontend:** Leaflet.js, Vanilla JS (ES6+), Modern CSS.
+* **Database:** MongoDB Atlas (NoSQL), Motor (Async Driver).
+* **Security:** Passlib (Bcrypt), OTP Verification.
 
-## ⚡ 4. Performance Monitoring
-
-To meet the high-performance requirement, the system was stress-tested using JMeter.
-
-### 📊 Response Time Analysis
-Database queries and API response times were monitored. The indexing strategy on MongoDB kept query times **under 10ms** even under load.
-<table border="0">
-  <tr>
-    <td width="50%" align="center"><img src="12.jpeg" width="100%"></td>
-    <td width="50%" align="center"><img src="13.jpeg" width="100%"></td>
-  </tr>
-</table>
-*(Left: Average Response Time Drop, Right: Request Stability Graph)*
+## 📦 Installation
+1. **Backend:** `cd backend` -> `python -m uvicorn main:app --reload`
+2. **Frontend:** Open `index.html` via **Live Server**.
 
 ---
-
-## ✅ Summary of Requirements Met
-
-1.  **User Types:** 3 Roles implemented (Student, Leader, Admin).
-2.  **Authentication:** JWT + Email Verification.
-3.  **CRUD Operations:** Full lifecycle management via API.
-4.  **Database:** MongoDB (NoSQL) implementation.
-5.  **Performance:** Optimized queries & monitoring graphs included.
-6.  **Hosting/API:** Swagger documentation provided.
-
-## 🚀 How to Run
-1.  `npm install`
-2.  Configure `.env` (MongoDB URI).
-3.  `node server.js`
-4.  Visit `http://localhost:3000`
+**Developer:** Busesla | 
